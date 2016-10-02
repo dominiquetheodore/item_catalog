@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
+<h1>{{ item.name }}: Change Picture</h1>
+<br>
+{% if item.img %}
+    <img class="orig_img" src = "/static/products/{{ item.img }}">
+{% else %}
+    <img class="" src = "http://placehold.it/250x250?text=No+Image">
+{% endif %}
+
+<form action="#" method = "post" enctype="multipart/form-data">
+    <div class="col-md-6">
+    	<br>
+    	<input id="file" name="file" type="file" class="file" data-preview-file-type="text">
+    </div>
+    <br>
+    <button class="btn btn-success" type="submit">Submit</button>
+</form>
+{% endblock %}

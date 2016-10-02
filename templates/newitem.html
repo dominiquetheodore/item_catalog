@@ -1,0 +1,103 @@
+{% extends "main.html" %}
+{% block content %}
+<script>
+	$( document ).ready(function() {
+	    $('#category').on('change',function(){
+	    	//retrieve subcategories and populate dropbox
+	    	var category_var = $('#category').val();
+
+			$.post("/get_subcats", {
+					category: category_var,
+			    }, function(data) {
+			    	$('#subcategory').empty();
+					var output = $.parseJSON(data);
+					$.each(output.resp, function(key, value){
+                    $('#subcategory').append('<option value=' + key + '>' + value
+ + '</option>');
+                    });
+
+			    });
+
+	    });
+	});
+
+	$('#images').fileinput({
+		dropZoneEnabled: true,
+        allowedFileExtensions : ['jpg', 'png','gif','txt','pdf','tiff'],
+		
+    });
+
+    $("#images").on('fileloaded', function(event, file, previewId, index) {
+            alert('i = ' + index + ', id = ' + previewId + ', file = ' + file.name);
+        });
+	// CATCH RESPONSE
+	$('#images').on('filebatchuploaderror', function(event, data, previewId, index) {
+	var form = data.form, files = data.files, extra = data.extra, 
+	    response = data.response, reader = data.reader;
+		//alert ("hello");
+	});
+</script>
+
+	{% include "header.html" %}
+
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>New Ad</h1>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<div class="alert alert-danger" role="alert">
+						<ul>
+							{% for message in messages %}
+								 <li> <strong> {{ message }} </strong> </li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post" enctype="multipart/form-data">
+				<div class="form-group">
+				<label for="category">Category:</label>
+				<select class="form-control" id="category" name="category">
+					{% for cat in categories %}
+						<option value="{{ cat.id }}">{{ cat.name }}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<label for="subcategory">Subcategory:</label>
+				<select class="form-control" id="subcategory" name="subcategory">
+					{% for subcat in subcategories %}
+						<option value="{{ subcat.id }}">{{ subcat.name }}</option>
+					{% endfor %}
+				</select>
+				<br>
+			
+				<label for="name">Name:</label>
+				<input id="name" name="name" type ="text" class="form-control" maxlength="100" value="">
+				<br>
+				<label for="description">Description:</label>
+				<textarea type ="text" class="form-control" id="description" name="description" rows="5" value=""></textarea>
+				<br>
+				<label for="price">Price:</label>
+					<div class="input-group">
+						<div class="input-group-addon">$</div>
+						<input type ="text" maxlength="10" class="form-control" id="price" name="price" value="">
+					</div>
+				<br>
+				<br>
+				<input id="file" name="file" type="file" class="file" data-preview-file-type="text">
+				<br>
+				<button type="submit" class="btn btn-default">Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}

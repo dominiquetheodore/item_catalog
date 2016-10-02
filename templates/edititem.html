@@ -1,0 +1,88 @@
+{% extends "main.html" %}
+{% block content %}
+	<script>
+	$( document ).ready(function() {
+	    $('#category').on('change',function(){
+	    	var category_var = $('#category').val();
+
+	    	// retrieve subcategories and populate dropdown
+			$.post("/get_subcats", {
+					category: category_var,
+			    }, function(data) {
+			    	$('#subcategory').empty();
+					var output = $.parseJSON(data);
+					$.each(output.resp, function(key, value){
+                    $('#subcategory').append('<option value=' + key + '>' + value
+ + '</option>');
+                    });
+
+			    });
+
+	    });
+	});
+	</script>
+
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>Edit Item</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+					<label for="category">Category:</label>
+				<select class="form-control" id="category" name="category">
+					{% for cat in categories %}
+						{% if cat.id == item.cat_id %}
+							<option value="{{ cat.id }}" selected>{{ cat.name }}</option>
+						{% else %}
+							<option value="{{ cat.id }}">{{ cat.name }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+				<br>
+				<label for="subcategory">Subcategory:</label>
+				<select class="form-control" id="subcategory" name="subcategory">
+				{% for subcat in subcategories %}
+						{% if subcat.id == item.subcat_id %}
+							<option value="{{ subcat.id }}" selected>{{ subcat.name }}</option>
+						{% else %}
+							<option value="{{ subcat.id }}">{{ subcat.name }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+				<br>
+					<label for="name">Name:</label>
+					<input type ="text" maxlength="100" class="form-control" id="name" name="name" value="{{item.name }}">
+
+					<label for="description">Description:</label>
+					<textarea class="form-control" maxlength="250" rows="3" name="description" id="description">{{item.description}}</textarea>
+
+					<label for="price">Price:</label>
+					<div class="input-group">
+						<div class="input-group-addon">$</div>
+						<input type ="text" maxlength="10" class="form-control" name="price" value="{{item.price}}">
+					</div>
+					<br>
+					{% if item.img %}
+						<img class="single_image" src = "/static/products/{{ item.img }}">
+					{% else %}
+						<img class="single_image" src = "http://placehold.it/250x250?text=No+Image">
+					{% endif %}
+					<br><br>
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Save</button>
+					<button class="btn btn-default">
+					<a href = '{{ url_for('showItem', category_id=item.cat_id, subcategory_id = item.subcat_id, product_id=item.id ) }}'>
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel
+					</a>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}

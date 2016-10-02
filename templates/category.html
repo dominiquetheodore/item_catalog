@@ -1,0 +1,76 @@
+{% extends "main.html" %}
+{% block content %}
+	<script>
+	$("document").ready(function(){
+		$('.trash').click(function(){
+			if (confirm("Are you sure you want to delete this?"))
+			{
+				$(this).parent().submit()
+			}
+		});
+	});
+	</script>
+
+	<ul class="breadcrumb">
+	  <li><a class="breadcrumb-item" href="{{ url_for('showCategories') }}">Home</a></li>
+	  <li><a class="breadcrumb-item" href="{{url_for('showCategory', category_id = category.id)}}">{{ category.name }}</a></li>
+	</ul>
+
+	{% include "header.html" %}
+
+	<div class="row">
+		<div class="text-center col-md-11 col-md-offset-1 padding-none">
+			<h1>{{ category.name }}</h1>
+			<a class="btn btn-success btn-md" role="button" href="{{ url_for('newSubCategory', category_id = category.id) }}">ADD SUBCATEGORY</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul>
+						{% for message in messages %}
+							 <li> <strong> {{ message }} </strong> </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+	<br>
+
+	{% for s in subcategories %}
+	<div class="col-md-3">
+		<div class="panel panel-default product_panel text-center">
+			<div class="panel-heading text-center">
+				<h4>{{ s.name }}</h4>
+			</div>
+			<div class="subcat_body panel-body">
+				{% if s.image %}
+				<img class="product_image" src = "/static/subcategories/{{ s.image }}">
+				{% else %}
+				<img class="product_image" src = "http://placehold.it/250x250?text=No+Image">
+				{% endif %}
+				<br>
+				<div class="pull-right">
+					{% if user.id == s.user_id %}
+					<a href="{{ url_for('changesubcatpic', subcategory_id = s.id) }}"><i class="fa fa-picture-o"></i></a>
+					<a href="{{ url_for('editSubCategory', category_id = category.id, subcategory_id = s.id) }}"><i class="fa fa-pencil"></i></a>
+					<form class="form_inline" action="{{ url_for('deleteSubCategory', category_id = category.id, subcategory_id = s.id) }}" method="post">
+						<i class="trash fa fa-trash-o"></i>
+					</form>
+					{% else %}
+					<a href="{{ url_for('changesubcatpic', subcategory_id = s.id) }}"><i class="fa fa-picture-o"></i></a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="panel-footer text-center category_panel_footer">
+				<a href="{{ url_for('showSubCategory', category_id = category.id, subcategory_id = s.id) }}">
+					<p>VIEW ALL ({{ s.count_items(s) }})</p>
+				</a>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+{% endblock %}

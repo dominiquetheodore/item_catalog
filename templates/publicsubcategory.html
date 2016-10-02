@@ -1,0 +1,53 @@
+{% extends "main.html" %}
+{% block content %}
+	<ul class="breadcrumb">
+	  <li><a class="breadcrumb-item" href="{{ url_for('showCategories') }}">Home</a></li>
+	  <li><a class="breadcrumb-item" href="{{url_for('showCategory', category_id = category.id)}}">{{ category.name }}</a></li>
+	  <li><a class="breadcrumb-item" href="{{url_for('showSubCategory', category_id = category.id, subcategory_id = subcategory.id)}}">{{ subcategory.name }}</a></li>
+	</ul>
+
+	<div class="row">
+		<div class="text-center col-md-11 col-md-offset-1 padding-none">
+			<h1>{{ subcategory.name }}</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul>
+						{% for message in messages %}
+							 <li> <strong> {{ message }} </strong> </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+
+	{% if items !=[] %}	
+		{% for i in items %}
+		<div class="col-md-4">
+			<div class="panel panel-default product_panel text-center">
+				<div class="panel-heading text-center">
+					<h4>{{ i.name }}</h4>
+				</div>
+				<div class="subcat_body panel-body">
+					{% if i.img %}
+					<img class="product_image" src = "/static/products/{{ i.img }}">
+					{% else %}
+					<img class="product_image" src = "http://placehold.it/250x250?text=No+Image">
+					{% endif %}
+					<h4 class="product_price">{{i.price}}</h4>	
+				</div>
+				<div class="panel-footer text-center">
+					<p>{{i.description}}</p>
+					<a class="btn btn-success" role="button" href="{{url_for('showItem', category_id = category.id, subcategory_id = i.subcat_id, product_id = i.id)}}">View</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}
