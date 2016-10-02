@@ -284,8 +284,8 @@ def newItem():
                 session.commit()
                 flash('A new item was created.')
                 return redirect(url_for('showSubCategory',
-                                    category_id=cat_id,
-                                    subcategory_id=subcat_id))
+                                        category_id=cat_id,
+                                        subcategory_id=subcat_id))
             else:
                 # form incomplete: form redrawn
                 categories = session.query(Category).all()
@@ -324,8 +324,8 @@ def newItem():
                 session.add(Item1)
                 session.commit()
                 return redirect(url_for('showSubCategory',
-                                    category_id=cat_id,
-                                    subcategory_id=subcat_id))
+                                        category_id=cat_id,
+                                        subcategory_id=subcat_id))
             else:
                 # file provided but not in one of the allowed formats
                 categories = session.query(Category).all()
